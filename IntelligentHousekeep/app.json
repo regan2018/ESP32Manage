@@ -1,0 +1,22 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/auth/auth",
+        "pages/basics/home/home",
+        "pages/component/home/home",
+        "pages/plugin/home/home",
+        "pages/about/home/home",
+        "pages/add/addBluetoothDevices"
+    ],
+    "window": {
+        "navigationBarBackgroundColor": "#39b54a",
+        "navigationBarTitleText": "Color UI",
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white"
+    },
+    "usingComponents": {
+        "cu-custom": "/colorui/components/cu-custom"
+    },
+    "style": "v2",
+    "sitemapLocation": "sitemap21.json"
+}

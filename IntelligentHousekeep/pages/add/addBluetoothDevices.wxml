@@ -1,0 +1,32 @@
+<!--添加蓝牙设备-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+    <view slot="backText">返回</view>
+    <view slot="content">添加蓝牙设备</view>
+</cu-custom>
+<view class="cu-bar bg-white solid-bottom margin-top">
+    <view class="action">
+      <text class="cuIcon-title text-blue"></text>搜索蓝牙设备
+    </view>
+    <view class="action">
+        <button wx:if="{{!isSearch}}" class="cu-btn bg-blue" style=" width: 100px;" bindtap="searchBluetooth">搜索设备</button>
+        <button wx:if="{{isSearch}}" class="cu-btn bg-red button" style=" width: 100px;" bindtap="stopBluetoothSearch">停止搜索</button>
+    </view>
+  </view>
+  <view class="cu-list menu-avatar">
+    <view class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}}" wx:for="{{deviceList}}" wx:key bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+      <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view class="content">
+        <view class="text-grey">{{item.name}}</view>
+        <view class="text-gray text-sm">
+          <text class="text-grey text-xs">MAC地址：</text> {{item.deviceId}}</view>
+      </view>
+      <view class="action">
+        <view class="text-grey text-xs {{item.connectable?'':'text-red'}}">{{item.connectable?"可连接":"占用中"}}</view>
+        <view class="cu-tag round bg-grey sm">{{item.RSSI}}</view>
+      </view>
+      <view class="move">
+        <view class="bg-grey">置顶</view>
+        <view class="bg-red">删除</view>
+      </view>
+    </view>
+  </view>
