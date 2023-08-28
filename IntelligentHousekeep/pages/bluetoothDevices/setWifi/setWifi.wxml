@@ -1,0 +1,56 @@
+<!--添加蓝牙设备-->
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+    <view slot="backText">返回</view>
+    <view slot="content">连接WIFI</view>
+</cu-custom>
+<view class="cu-bar bg-white solid-bottom margin-top">
+    <view class="action">
+      <text class="cuIcon-title text-blue"></text>选择设备要连接的WIFI
+    </view>
+    <view class="action">
+        <button wx:if="{{!isSearch}}" class="cu-btn bg-blue" style=" width: 100px;" bindtap="searchWifi">搜索WIFI</button>
+        <button wx:if="{{isSearch}}" class="cu-btn bg-blue" style=" width: 100px;margin-right: 12px;" bindtap="restartWifi">重新搜索</button>
+        <!-- <button wx:if="{{isSearch}}" class="cu-btn bg-red button" style=" width: 100px;" bindtap="stopWifiSearch">停止搜索</button> -->
+    </view>
+  </view>
+  <view class="cu-list menu-avatar">
+    <view class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}}" wx:for="{{wifiList}}" wx:key  data-target="move-box-{{index}}"  data-index="{{index}}" bindtap="showPwdModal">
+      <view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100{{index+1}}.jpg);"></view>
+      <view class="content">
+        <view class="text-grey">{{item.SSID}}</view>
+        <view class="text-gray text-sm">
+          <text class="text-grey text-xs">MAC地址：</text> {{item.BSSID}}</view>
+      </view>
+      <view class="action">
+        <view class="text-grey text-xs {{item.secure?'':'text-red'}}">{{item.secure?"安全":"不安全"}}</view>
+        <view class="cu-tag round bg-grey sm">{{item.signalStrength}}</view>
+      </view>
+      <!-- <view class="move">
+        <view wx:if="{{item.connectable}}" class="bg-grey" data-index="{{index}}" bindtap="openBluetoothManagePage">发送数据</view>
+      </view> -->
+    </view>
+  </view>
+
+  <view class="cu-modal {{isShowPwd?'show':''}}">
+    <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">请输入WIFI密码</view>
+      <view class="action" bindtap="hidePwdModal">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-xl">
+        <view class="cu-form-group">
+            <view class="title">WIFI密码</view>
+            <input type="text" bindinput="inputPwd" placeholder="请输入连接WIFI的密码"></input>
+        </view>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <button class="cu-btn line-green text-green" style="max-width:100px;" bindtap="hidePwdModal">取消</button>
+        <button class="cu-btn bg-green margin-left" style="max-width:100px;margin-left: 20px;" bindtap="sendWifiCfgInfo">确定</button>
+
+      </view>
+    </view>
+  </view>
+</view>

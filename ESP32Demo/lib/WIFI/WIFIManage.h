@@ -131,9 +131,11 @@ public:
     }
 
     //断开WIFI连接
-    void disconnect() {
-        WiFi.disconnect();
+    bool disconnect() {
+        client.disconnect();
+        bool isflag= WiFi.disconnect();
         Serial.println("已断开与WiFi网络的连接。");
+        return isflag;
     }
 
 
@@ -143,25 +145,26 @@ public:
      * password:    WIFI密码
      * return:      连接成功返回true
     ***********************************************************************************/
-    void connect_WIFI(String ssid, String password){
+    bool connect_WIFI(String ssid, String password){
         WiFi.begin(ssid.c_str(), password.c_str());               //连接WIFI
         Serial.print("连接WIFI");
-        //循环30秒后连接不上跳出循环
+        //循环60秒后连接不上跳出循环
         int i = 0;
         while(WiFi.status() != WL_CONNECTED){
             Serial.print(".");
             delay(1000);
             i++;
-            if(i>30){
+            if(i>60){
                 Serial.println();
                 Serial.println("WIFI连接失败，请重新配置网络");
-                return;
+                return false;
             }
         }
         Serial.println();
         IPAddress local_IP = WiFi.localIP();
         Serial.print("WIFI连接成功，本地IP地址:"); //连接成功提示
         Serial.println(local_IP); 
+        return true;
     }
     
     
@@ -177,11 +180,23 @@ public:
                 Serial.println("未保存WIFI连接信息，无法从文件中读取信息进行连接");
                 return;
             }
+            Serial.print("连接WIFI的参数：");Serial.println(str);
             String wifiname = analysisJson(str, "wifiname");           //解析WIFI名称
             String wifipassword = analysisJson(str, "wifipassword");   //解析WIFI密码
-            connect_WIFI(wifiname, wifipassword);                       //连接WIFI
+            
+            if(connect_WIFI(wifiname, wifipassword)){                 //连接WIFI
+                // mqttCfg();
 
-            mqttCfg();
+                // 发送POST请求
+                // String response = httpGet("http://www.baidu.com");
+                // Serial.println("GET response:");
+                // Serial.println(response);
+                // 发送POST请求
+                //  const char* payload = "{\"uid\":\"63d67cb328a3480d80d18e4cc8c41002\" \"\",\"topic\":\"esp32mqtt\", \"type\": 1,\"msg\":\"2434sfdsd\"}";
+                //  String response = httpPost("https://apis.bemfa.com/va/postJsonMsg", payload);
+                //  Serial.println("POST response:");
+                //  Serial.println(response);
+            }
         }
         catch(const std::exception& e)
         {
@@ -216,6 +231,7 @@ public:
     void connect_NET(){
         wifi_connect();                               //连接WIFI
         //DNSServerCfg();
+        //mqttCfg();
     }
     
     
@@ -237,11 +253,11 @@ public:
     }
     //get请求
     String httpGet(const char* url) {
-        WiFiClient client;
+        WiFiClient wifiClient;
         HTTPClient http;
         String result;
 
-        http.begin(client, url);
+        http.begin(wifiClient, url);
         int httpResponseCode = http.GET();
 
         if (httpResponseCode == HTTP_CODE_OK) {
@@ -255,11 +271,11 @@ public:
     }
     //post请求
     String httpPost(const char* url, const char* payload) {
-        WiFiClient client;
+        WiFiClient wifiClient;
         HTTPClient http;
         String result;
 
-        http.begin(client, url);
+        http.begin(wifiClient, url);
         http.addHeader("Content-Type", "application/json");
         int httpResponseCode = http.POST(payload);
 
@@ -279,6 +295,10 @@ private:
 };
     //保存WIFI配置信息
     void saveWIFICfg(String ssid,String password){
+        //删除WIFI配置文件
+        bool delFlat= fsManageUtil.delFile(wifiCfgPath);
+        Serial.print("文件状态：");Serial.println(delFlat);
+        
         //把SSID和password写成一个JSON格式
         StaticJsonDocument<200> wifi_json;                                            //创建一个JSON对象,wifi_json
         wifi_json["wifiname"] = ssid;                                                          //写入一个建和值

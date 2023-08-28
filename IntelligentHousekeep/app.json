@@ -6,7 +6,9 @@
         "pages/component/home/home",
         "pages/plugin/home/home",
         "pages/about/home/home",
-        "pages/add/addBluetoothDevices"
+        "pages/search/searchBluetoothDevices",
+        "pages/bluetoothDevices/bluetoothDevicesManage",
+        "pages/bluetoothDevices/setWifi/setWifi"
     ],
     "window": {
         "navigationBarBackgroundColor": "#39b54a",
@@ -16,6 +18,11 @@
     },
     "usingComponents": {
         "cu-custom": "/colorui/components/cu-custom"
+    },
+    "permission": {
+        "scope.userLocation": {
+          "desc": "为完美使用小程序,请允许获取您的位置权限!"
+        }
     },
     "style": "v2",
     "sitemapLocation": "sitemap21.json"

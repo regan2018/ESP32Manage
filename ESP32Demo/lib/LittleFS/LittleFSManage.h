@@ -56,7 +56,21 @@ public:
     }
 
     bool remove(const char* filePath) {
+        Serial.println("删除文件");
         return LittleFS.remove(filePath);
+    }
+
+    /**
+     * 删除文件
+    */
+    bool delFile(String filePath) {
+        if(LittleFS.remove(filePath)){
+            Serial.println("删除文件成功");
+            return true;
+        }else{
+            Serial.println("删除文件失败");
+            return false;
+        }
     }
 
     /**************************************************************************************

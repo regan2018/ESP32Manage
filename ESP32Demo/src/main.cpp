@@ -18,18 +18,19 @@ void setup() {
 
   fsUtil.LittleFS_begin();   //LittleFS文件系统初始化
 
-  rremoteUtil.startRecv();//红外管理
+  //rremoteUtil.startRecv();//红外管理
 
   #pragma region WIFI启动并连接
    if(!network.isConnected()){
       saveWIFICfg(ssid,password);
       network.connect_NET();       //网络初始化
+      //network.mqttCfg();
       
    }
   #pragma endregion
 
   #pragma region 低功耗蓝牙相关操作
-    bluetooth.start();
+    // bluetooth.start();
     // bluetooth.getConnected();
   #pragma endregion
 
@@ -44,7 +45,7 @@ void setup() {
 
 #pragma region 设备循环执行的方法
 void loop() {
-  network.mqtt_loop();//mqtt服务的请求处理
+  // network.mqtt_loop();//mqtt服务的请求处理
 
   // rremoteUtil.irrecv_loop();//红外循环接收处理
 
@@ -59,18 +60,23 @@ void loop() {
   #pragma endregion
 
   #pragma region 网络相关请求
+    if(!network.isConnected()){
+      network.connect_NET();
+      delay(2000);
+    }
+
     if(network.isConnected()){
       // 发送GET请求
-      // String response = network.httpGet("http://www.baidu.com");
-      // Serial.println("GET response:");
-      // Serial.println(response);
-      // delay(5000);
+      String response = network.httpGet("http://www.baidu.com");
+      Serial.println("GET response:");
+      Serial.println(response);
+      delay(5000);
 
-  //  // 发送POST请求
-  //  const char* payload = "{\"name\": \"John\", \"age\": 30}";
-  //  response = network.httpPost("http://example.com/api/user", payload);
-  //  Serial.println("POST response:");
-  //  Serial.println(response);
+   // 发送POST请求
+      // const char* payload = "{\"name\": \"John\", \"age\": 30}";
+      // String response = network.httpPost("https://apis.bemfa.com/va/postJsonMsg", payload);
+      // Serial.println("POST response:");
+      // Serial.println(response);
     }
 
   #pragma endregion

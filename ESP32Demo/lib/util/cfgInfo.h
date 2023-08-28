@@ -37,8 +37,8 @@ RremoteUtil rremoteUtil;
 
 
 //wifi配置参数
-const char* ssid = "@Ruijie-m38D1";
-const char* password = "";
+const char* ssid = "banpai";
+const char* password = "banpai123";
 NetworkUtils network;
 
 //蓝牙配置参数

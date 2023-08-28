@@ -8,18 +8,57 @@
     #include "WIFIManage.h" //WIFI管理工具类
 #endif
 
-#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+//多线程工具类
+#include "Multithreading.h"
+
+#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b" //蓝牙特征对应服务的 UUID
+#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8" //蓝牙特征的 UUID
 
 //重新连接WIFI
 #define RECONNECT_WIFI "重新连接WIFI"
 //设备运行时长
 #define DEVICE_RUN_TIME "设备运行时长"
+//设置WIFI信息
+#define SET_WIFI "setWifi"
 
 //蓝牙连接状态
 bool connected = false;
 
-NetworkUtils network2;
+//NetworkUtils network2;
+
+
+//线程处理方法
+void taskHandleData(void *parameter){
+    const char* comm_val=(char*)parameter;
+    Serial.print("线程收到的数据：");Serial.println(comm_val);
+    String cmdName=analysisJson(comm_val,"cmdName");
+    String cmdVal=analysisJson(comm_val,"cmdVal");
+   
+    Serial.print("cmdName：");Serial.println(cmdName);
+    Serial.print("cmdVal：");Serial.println(cmdVal);
+
+    if(cmdName.equals(SET_WIFI)){
+        String wifiName=analysisJson(cmdVal,"wifiName");
+        String wifiPwd=analysisJson(cmdVal,"wifiPwd");
+        
+        saveWIFICfg(wifiName,wifiPwd);
+        // network2.wifi_connect();        
+    }
+
+    if((strcmp(RECONNECT_WIFI, comm_val) == 0)){
+        Serial.println("正在重新连接WIFI....");
+        //network2.wifi_connect();
+    }
+    if(strcmp(DEVICE_RUN_TIME,comm_val)==0){
+        long runTime=millis();//设备运行时长，毫秒
+        Serial.print("设备运行时长【毫秒】：");Serial.println(runTime);
+        Serial.print("设备运行时长【秒】：");Serial.println(runTime/1000);
+        Serial.print("设备运行时长【分】：");Serial.println(runTime/(1000*60.0));
+        Serial.print("设备运行时长【时】：");Serial.println(runTime/(1000*60.0*60));
+        Serial.print("设备运行时长【天】：");Serial.println(runTime/(1000*60.0*60*24));
+    }
+
+}
 
 class MyServerCallbacks : public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
@@ -41,26 +80,30 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
         if (value.length() > 0) {
             Serial.println("*********");
             Serial.print("收到新的数据: ");
-            for (int i = 0; i < value.length(); i++)
+            for (int i = 0; i < value.length(); i++){
                 Serial.print(value[i]);
-
+            }
+            Serial.println();
             
             #pragma region 蓝牙接收指令并处理
             
             const char* comm_val=value.c_str();
+            String cmdName=analysisJson(comm_val,"cmdName");
+            String cmdVal=analysisJson(comm_val,"cmdVal");
+            if(cmdName.equals(SET_WIFI)){
+                String wifiName=analysisJson(cmdVal,"wifiName");
+                String wifiPwd=analysisJson(cmdVal,"wifiPwd");
+                saveWIFICfg(wifiName,wifiPwd);
+                
 
-            if((strcmp(RECONNECT_WIFI, comm_val) == 0)){
-                Serial.println("正在重新连接WIFI....");
-                network2.wifi_connect();
+                // if(network2.disconnect()){
+                //     network2.wifi_connect();  
+                // }      
             }
-            if(strcmp(DEVICE_RUN_TIME,comm_val)==0){
-                long runTime=millis();//设备运行时长，毫秒
-                Serial.print("设备运行时长【毫秒】：");Serial.println(runTime);
-                Serial.print("设备运行时长【秒】：");Serial.println(runTime/1000);
-                Serial.print("设备运行时长【分】：");Serial.println(runTime/(1000*60.0));
-                Serial.print("设备运行时长【时】：");Serial.println(runTime/(1000*60.0*60));
-                Serial.print("设备运行时长【天】：");Serial.println(runTime/(1000*60.0*60*24));
-            }
+
+            //创建线程处理指令
+            //createTask(taskHandleData,"BTE_task",configMINIMAL_STACK_SIZE,(void *)&comm_val,1);
+            Serial.println("指令发送成功");            
 
             #pragma endregion
             

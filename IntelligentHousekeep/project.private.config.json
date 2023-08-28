@@ -10,7 +10,21 @@
             "list": [
                 {
                     "name": "搜索蓝牙设备页面",
-                    "pathName": "pages/add/addBluetoothDevices",
+                    "pathName": "pages/search/searchBluetoothDevices",
+                    "query": "",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "设备界面",
+                    "pathName": "pages/bluetoothDevices/bluetoothDevicesManage",
+                    "query": "deviceId=34:23:42&deviceName=MyESP",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "设置WIFI",
+                    "pathName": "pages/bluetoothDevices/setWifi/setWifi",
                     "query": "",
                     "launchMode": "default",
                     "scene": null

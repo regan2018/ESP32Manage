@@ -58,7 +58,7 @@
       </button>
     </view>
     <view class="cu-item arrow">
-      <navigator class="content" url="/pages/add/addBluetoothDevices" hover-class="none">
+      <navigator class="content" url="/pages/search/searchBluetoothDevices" hover-class="none">
         <text class="cuIcon-creativefill text-orange"></text>
         <text class="text-grey">Bug测试</text>
       </navigator>
