@@ -185,7 +185,7 @@ public:
             String wifipassword = analysisJson(str, "wifipassword");   //解析WIFI密码
             
             if(connect_WIFI(wifiname, wifipassword)){                 //连接WIFI
-                // mqttCfg();
+                mqttCfg();
 
                 // 发送POST请求
                 // String response = httpGet("http://www.baidu.com");
@@ -252,12 +252,11 @@ public:
         return WiFi.status() == WL_CONNECTED;
     }
     //get请求
-    String httpGet(const char* url) {
-        WiFiClient wifiClient;
+    String httpGet(const String url) {
         HTTPClient http;
         String result;
 
-        http.begin(wifiClient, url);
+        http.begin(url);
         int httpResponseCode = http.GET();
 
         if (httpResponseCode == HTTP_CODE_OK) {
@@ -270,12 +269,11 @@ public:
         return result;
     }
     //post请求
-    String httpPost(const char* url, const char* payload) {
-        WiFiClient wifiClient;
+    String httpPost(const String url, const String payload) {
         HTTPClient http;
         String result;
 
-        http.begin(wifiClient, url);
+        http.begin(url);
         http.addHeader("Content-Type", "application/json");
         int httpResponseCode = http.POST(payload);
 

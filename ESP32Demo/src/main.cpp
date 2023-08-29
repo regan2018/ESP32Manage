@@ -45,7 +45,7 @@ void setup() {
 
 #pragma region 设备循环执行的方法
 void loop() {
-  // network.mqtt_loop();//mqtt服务的请求处理
+  network.mqtt_loop();//mqtt服务的请求处理
 
   // rremoteUtil.irrecv_loop();//红外循环接收处理
 
@@ -67,7 +67,7 @@ void loop() {
 
     if(network.isConnected()){
       // 发送GET请求
-      String response = network.httpGet("http://www.baidu.com");
+      String response = network.httpGet("https://www.eyijiao.com");
       Serial.println("GET response:");
       Serial.println(response);
       delay(5000);
