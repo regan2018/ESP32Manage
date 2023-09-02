@@ -296,6 +296,9 @@ private:
         //删除WIFI配置文件
         bool delFlat= fsManageUtil.delFile(wifiCfgPath);
         Serial.print("文件状态：");Serial.println(delFlat);
+        if(!delFlat){
+            Serial.println("删除文件失败，无法保存WIFI信息");
+        }
         
         //把SSID和password写成一个JSON格式
         StaticJsonDocument<200> wifi_json;                                            //创建一个JSON对象,wifi_json

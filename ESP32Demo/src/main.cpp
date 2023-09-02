@@ -30,7 +30,7 @@ void setup() {
   #pragma endregion
 
   #pragma region 低功耗蓝牙相关操作
-    // bluetooth.start();
+    bluetooth.start();
     // bluetooth.getConnected();
   #pragma endregion
 

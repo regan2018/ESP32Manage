@@ -24,7 +24,7 @@
 //蓝牙连接状态
 bool connected = false;
 
-//NetworkUtils network2;
+NetworkUtils network2;
 
 
 //线程处理方法
@@ -42,7 +42,7 @@ void taskHandleData(void *parameter){
         String wifiPwd=analysisJson(cmdVal,"wifiPwd");
         
         saveWIFICfg(wifiName,wifiPwd);
-        // network2.wifi_connect();        
+        network2.wifi_connect();        
     }
 
     if((strcmp(RECONNECT_WIFI, comm_val) == 0)){
@@ -90,19 +90,19 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
             const char* comm_val=value.c_str();
             String cmdName=analysisJson(comm_val,"cmdName");
             String cmdVal=analysisJson(comm_val,"cmdVal");
-            if(cmdName.equals(SET_WIFI)){
-                String wifiName=analysisJson(cmdVal,"wifiName");
-                String wifiPwd=analysisJson(cmdVal,"wifiPwd");
-                saveWIFICfg(wifiName,wifiPwd);
+            // if(cmdName.equals(SET_WIFI)){
+            //     String wifiName=analysisJson(cmdVal,"wifiName");
+            //     String wifiPwd=analysisJson(cmdVal,"wifiPwd");
+            //     saveWIFICfg(wifiName,wifiPwd);
                 
 
-                // if(network2.disconnect()){
-                //     network2.wifi_connect();  
-                // }      
-            }
+            //     // if(network2.disconnect()){
+            //     //     network2.wifi_connect();  
+            //     // }      
+            // }
 
             //创建线程处理指令
-            //createTask(taskHandleData,"BTE_task",configMINIMAL_STACK_SIZE,(void *)&comm_val,1);
+            createTask(taskHandleData,"BTE_task",configMINIMAL_STACK_SIZE,(void *)&comm_val,1);
             Serial.println("指令发送成功");            
 
             #pragma endregion
