@@ -18,6 +18,7 @@
 #include "LittleFSManage.h" //文件系统工具类
 #endif
 
+
 // 定义三基色针脚
 gpio_num_t R = GPIO_NUM_12;
 gpio_num_t G = GPIO_NUM_13;

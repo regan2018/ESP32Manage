@@ -17,12 +17,19 @@ void setup() {
   Serial.begin(115200);
 
   fsUtil.LittleFS_begin();   //LittleFS文件系统初始化
+  if (LittleFS.begin(true,"/cfg")) {
+    Serial.println("LittleFS mounted successfully.");
+  } else {
+    Serial.println("LittleFS mount failed.");
+    return;
+  }
+  
 
-  //rremoteUtil.startRecv();//红外管理
+  //remoteUtil.startRecv();//红外管理
 
   #pragma region WIFI启动并连接
    if(!network.isConnected()){
-      saveWIFICfg(ssid,password);
+      //saveWIFICfg(ssid,password);
       network.connect_NET();       //网络初始化
       //network.mqttCfg();
       

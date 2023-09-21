@@ -28,7 +28,7 @@ PubSubClient client(espClient);
 
 LittleFSWrapper fsManageUtil;
 
-String wifiCfgPath="/WIFIConfig.conf";
+String wifiCfgPath="/WIFIConfig.json";
 
 
 //mqtt配置
@@ -292,13 +292,14 @@ private:
     const char* password;
 };
     //保存WIFI配置信息
-    void saveWIFICfg(String ssid,String password){
+    bool saveWIFICfg(String ssid,String password){
+        
         //删除WIFI配置文件
-        bool delFlat= fsManageUtil.delFile(wifiCfgPath);
-        Serial.print("文件状态：");Serial.println(delFlat);
-        if(!delFlat){
-            Serial.println("删除文件失败，无法保存WIFI信息");
-        }
+        // bool delFlat= fsManageUtil.delFile(wifiCfgPath);
+        // Serial.print("文件状态：");Serial.println(delFlat);
+        // if(!delFlat){
+        //     Serial.println("删除文件失败，无法保存WIFI信息");
+        // }
         
         //把SSID和password写成一个JSON格式
         StaticJsonDocument<200> wifi_json;                                            //创建一个JSON对象,wifi_json
@@ -311,6 +312,8 @@ private:
 
         String cfgInfo=fsManageUtil.str_read(wifiCfgPath);
         Serial.print("保存后的配置信息：");Serial.println(cfgInfo);
+        return true;
+        
     }
 
     /**********************************************************************************

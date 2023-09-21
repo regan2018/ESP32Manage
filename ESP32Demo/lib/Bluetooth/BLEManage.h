@@ -42,7 +42,12 @@ void taskHandleData(void *parameter){
         String wifiPwd=analysisJson(cmdVal,"wifiPwd");
         
         saveWIFICfg(wifiName,wifiPwd);
-        network2.wifi_connect();        
+        
+        //清理LittleFS
+        LittleFS.end();
+        //重启ESP32
+        ESP.restart();
+        //network2.wifi_connect();        
     }
 
     if((strcmp(RECONNECT_WIFI, comm_val) == 0)){
@@ -100,9 +105,21 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
             //     //     network2.wifi_connect();  
             //     // }      
             // }
-
+            if(cmdName.equals(SET_WIFI)){
+                String wifiName=analysisJson(cmdVal,"wifiName");
+                String wifiPwd=analysisJson(cmdVal,"wifiPwd");
+                
+                saveWIFICfg(wifiName,wifiPwd);
+                
+                //保存文件内容后，重新启动才会生效
+                //清理LittleFS
+                LittleFS.end();
+                //重启ESP32
+                ESP.restart();
+                //network2.wifi_connect();        
+            }
             //创建线程处理指令
-            createTask(taskHandleData,"BTE_task",configMINIMAL_STACK_SIZE,(void *)&comm_val,1);
+            //createTask(taskHandleData,"BTE_task",configMINIMAL_STACK_SIZE,(void *)&comm_val,1);
             Serial.println("指令发送成功");            
 
             #pragma endregion
