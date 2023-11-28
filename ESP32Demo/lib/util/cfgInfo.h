@@ -14,9 +14,22 @@
 #include "BTManage.h"  //经典蓝牙工具类
 
 #ifndef LittleFSManage // 使用 #ifndef，#define 和 #endif 来进行保护，也就是缺少了防止类被多次包含的宏；
-#define LittleFSManage
-#include "LittleFSManage.h" //文件系统工具类
+  #define LittleFSManage
+  #include "LittleFSManage.h" //文件系统工具类
 #endif
+
+#ifndef PWMController //PWM工具类
+  #include "PWMController.h"
+#endif
+
+const uint8_t PWM_PIN = 13;
+const uint32_t PWM_FREQ = 1000;
+const uint8_t PWM_RESOLUTION = 8;
+
+// 全局变量声明在头文件中,全局变量，可以使用 `extern` 来引用全局变量
+uint8_t pwm_percent=50;//PWM的占空比，电机调速时调整这个值
+//PWM配置
+PWMController pwm(PWM_PIN, PWM_FREQ, PWM_RESOLUTION);
 
 
 // 定义三基色针脚

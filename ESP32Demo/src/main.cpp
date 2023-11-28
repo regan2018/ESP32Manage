@@ -5,11 +5,9 @@
 
 
 #ifndef cfgInfo_H // 使用 #ifndef，#define 和 #endif 来进行保护，也就是缺少了防止类被多次包含的宏；
-#define cfgInfo_H
-#include "cfgInfo.h" //配置参数信息类
+  #define cfgInfo_H
+  #include "cfgInfo.h" //配置参数信息类
 #endif
-
-
 
 
 #pragma region 初始化调用方法
@@ -53,6 +51,9 @@ void setup() {
 #pragma region 设备循环执行的方法
 void loop() {
   network.mqtt_loop();//mqtt服务的请求处理
+
+  // 在循环中设置占空比
+  pwm.setDutyCycle(pwm_percent); // 设置为50%的占空比
 
   // rremoteUtil.irrecv_loop();//红外循环接收处理
 

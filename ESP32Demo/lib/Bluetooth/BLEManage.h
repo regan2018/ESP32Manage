@@ -8,6 +8,7 @@
     #include "WIFIManage.h" //WIFI管理工具类
 #endif
 
+
 //多线程工具类
 #include "Multithreading.h"
 
@@ -20,12 +21,17 @@
 #define DEVICE_RUN_TIME "设备运行时长"
 //设置WIFI信息
 #define SET_WIFI "setWifi"
+//设置PWM的占空比
+#define SET_PWM_PERCENT "setPwmPercent"
+
 
 //蓝牙连接状态
 bool connected = false;
 
 NetworkUtils network2;
 
+//重写全局变量
+extern uint8_t pwm_percent;//PWM的占空比，电机调速时调整这个值
 
 //线程处理方法
 void taskHandleData(void *parameter){
@@ -61,6 +67,12 @@ void taskHandleData(void *parameter){
         Serial.print("设备运行时长【分】：");Serial.println(runTime/(1000*60.0));
         Serial.print("设备运行时长【时】：");Serial.println(runTime/(1000*60.0*60));
         Serial.print("设备运行时长【天】：");Serial.println(runTime/(1000*60.0*60*24));
+    }
+    if((strcmp(SET_PWM_PERCENT, comm_val) == 0)){
+        String pwmPercentValStr=analysisJson(cmdVal,"pwmPercentVal");
+        int pwmPercentVal=pwmPercentValStr.toInt();
+        pwm_percent=pwmPercentVal;
+        Serial.print("已设置PWM的占空比为："); Serial.println(pwmPercentVal);
     }
 
 }
