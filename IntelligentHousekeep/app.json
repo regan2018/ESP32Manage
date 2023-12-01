@@ -8,7 +8,8 @@
         "pages/about/home/home",
         "pages/search/searchBluetoothDevices",
         "pages/bluetoothDevices/bluetoothDevicesManage",
-        "pages/bluetoothDevices/setWifi/setWifi"
+        "pages/bluetoothDevices/setWifi/setWifi",
+        "pages/bluetoothDevices/led/lampManage"
     ],
     "window": {
         "navigationBarBackgroundColor": "#39b54a",
@@ -21,7 +22,7 @@
     },
     "permission": {
         "scope.userLocation": {
-          "desc": "为完美使用小程序,请允许获取您的位置权限!"
+            "desc": "为完美使用小程序,请允许获取您的位置权限!"
         }
     },
     "style": "v2",

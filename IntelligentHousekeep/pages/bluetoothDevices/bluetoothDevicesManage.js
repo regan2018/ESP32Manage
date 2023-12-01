@@ -62,7 +62,11 @@ Page({
     },
     //进入灯控管理
     showLampManage(){
-
+        var deviceId= this.data.deviceId;
+        var deviceName=this.data.deviceName;
+        wx.navigateTo({
+          url: '/pages/bluetoothDevices/led/lampManage?deviceId='+deviceId+'&deviceName='+deviceName,
+        })
     },
     //获取设备在线时长
     getOnlineTime(){

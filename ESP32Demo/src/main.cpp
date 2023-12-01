@@ -52,9 +52,13 @@ void setup() {
 void loop() {
   network.mqtt_loop();//mqtt服务的请求处理
 
+  Serial.print("PWM值："); Serial.println(pwm_percent);
+
+  Serial.print("LED开头值："); Serial.println(switch_led_state);
+
   // 在循环中设置占空比
   pwm.setDutyCycle(pwm_percent); // 设置为50%的占空比
-
+  delay(2000);
   // rremoteUtil.irrecv_loop();//红外循环接收处理
 
   // network.DNS_request_loop();   //DNS服务请求处理
@@ -75,10 +79,10 @@ void loop() {
 
     if(network.isConnected()){
       // 发送GET请求
-      String response = network.httpGet("https://www.eyijiao.com");
+      /*String response = network.httpGet("https://www.eyijiao.com");
       Serial.println("GET response:");
       Serial.println(response);
-      delay(5000);
+      delay(5000);*/
 
    // 发送POST请求
       // const char* payload = "{\"name\": \"John\", \"age\": 30}";

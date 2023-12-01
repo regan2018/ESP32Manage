@@ -105,7 +105,8 @@ public:
         return "";                                       //无法打开文件直接返回
       }
       String str = rf.readString();                      //读取字符串
-      rf.close();                                        //关闭文件 
+      rf.flush();                                        //关闭文件 
+      rf.close();
       return str;
   }
   

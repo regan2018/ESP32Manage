@@ -31,6 +31,8 @@ uint8_t pwm_percent=50;//PWM的占空比，电机调速时调整这个值
 //PWM配置
 PWMController pwm(PWM_PIN, PWM_FREQ, PWM_RESOLUTION);
 
+// 全局变量声明在头文件中,全局变量，可以使用 `extern` 来引用全局变量
+uint8_t switch_led_state=0;//LED灯开头状态，0=关，1=开
 
 // 定义三基色针脚
 gpio_num_t R = GPIO_NUM_12;
@@ -65,3 +67,4 @@ ClassicBluetooth classicBT;
 
 //LittleFS文件系统
 LittleFSWrapper fsUtil;
+

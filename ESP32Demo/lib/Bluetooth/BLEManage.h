@@ -2,6 +2,7 @@
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <BLEAddress.h>
+#include <ArduinoJson.h>
 
 #ifndef WIFIManage //使用 #ifndef，#define 和 #endif 来进行保护，也就是缺少了防止类被多次包含的宏；
     #define WIFIManage
@@ -23,6 +24,8 @@
 #define SET_WIFI "setWifi"
 //设置PWM的占空比
 #define SET_PWM_PERCENT "setPwmPercent"
+//LED开头
+#define SWITCH_LED "switchLed"
 
 
 //蓝牙连接状态
@@ -30,12 +33,74 @@ bool connected = false;
 
 NetworkUtils network2;
 
+//基本信息配置路径
+String infoCfgPath="/InfoConfig.json";
+
 //重写全局变量
 extern uint8_t pwm_percent;//PWM的占空比，电机调速时调整这个值
 
-//线程处理方法
-void taskHandleData(void *parameter){
-    const char* comm_val=(char*)parameter;
+//重写全局变量
+extern uint8_t switch_led_state;//LED灯开头状态
+
+
+//保存配置信息
+bool saveInfoCfg(String key,String val){
+    
+    String cfgInfo=fsManageUtil.str_read(infoCfgPath);
+    Serial.print("保存前的配置信息：");Serial.println(cfgInfo);
+    
+    //把写成一个JSON格式
+    StaticJsonDocument<200> info_json; 
+
+    // 解析JSON字符串
+    const size_t capacity = JSON_OBJECT_SIZE(1024);
+    DynamicJsonDocument doc(capacity);
+    DeserializationError error = deserializeJson(doc, cfgInfo);
+
+    // 检查解析错误
+    if (error) {
+        Serial.print("deserializeJson() failed: ");
+        Serial.println(error.f_str());
+        return false;
+    }
+
+    bool isNewAddKey=true;//是否新增key
+    // 遍历JSON数据
+    for (JsonPair kv : doc.as<JsonObject>()) {
+        const char* tempKey = kv.key().c_str();
+        const String tempValue = kv.value().as<String>();
+
+        Serial.print("Key: ");
+        Serial.println(tempKey);
+        Serial.print("Value: ");
+        Serial.println(tempValue);
+        Serial.println("-----");
+
+        if(key.equals(tempKey)){
+            info_json[key] = val;
+            isNewAddKey=false;
+        }else{
+            info_json[tempKey] = tempValue;
+        }
+    }
+    if(isNewAddKey){
+        info_json[key] = val;
+    }
+    
+    String info_json_str;                                                         //定义一个字符串变量
+    serializeJson(info_json, info_json_str);                                      //生成JOSN的字符串
+    fsManageUtil.str_write(infoCfgPath,info_json_str);
+    Serial.println("基本信息配置保存成功");
+
+    String cfgInfoPrint=fsManageUtil.str_read(infoCfgPath);
+    Serial.print("保存后的配置信息：");Serial.println(cfgInfoPrint);
+    return true;
+    
+}
+
+//业务处理方法
+void businessHandleData(const char* comm_val){
+    //const char* comm_val=(char*)parameter;
     Serial.print("线程收到的数据：");Serial.println(comm_val);
     String cmdName=analysisJson(comm_val,"cmdName");
     String cmdVal=analysisJson(comm_val,"cmdVal");
@@ -43,6 +108,11 @@ void taskHandleData(void *parameter){
     Serial.print("cmdName：");Serial.println(cmdName);
     Serial.print("cmdVal：");Serial.println(cmdVal);
 
+    //strcmp 该函数接受两个参数，分别为要比较的两个字符串的指针。返回值为整形，表示两个字符串的大小关系。 
+    if((strcmp(RECONNECT_WIFI, comm_val) == 0)){
+        Serial.println("正在重新连接WIFI....");
+        //network2.wifi_connect();
+    }
     if(cmdName.equals(SET_WIFI)){
         String wifiName=analysisJson(cmdVal,"wifiName");
         String wifiPwd=analysisJson(cmdVal,"wifiPwd");
@@ -53,14 +123,9 @@ void taskHandleData(void *parameter){
         LittleFS.end();
         //重启ESP32
         ESP.restart();
-        //network2.wifi_connect();        
     }
 
-    if((strcmp(RECONNECT_WIFI, comm_val) == 0)){
-        Serial.println("正在重新连接WIFI....");
-        //network2.wifi_connect();
-    }
-    if(strcmp(DEVICE_RUN_TIME,comm_val)==0){
+    if(cmdName.equals(DEVICE_RUN_TIME)){
         long runTime=millis();//设备运行时长，毫秒
         Serial.print("设备运行时长【毫秒】：");Serial.println(runTime);
         Serial.print("设备运行时长【秒】：");Serial.println(runTime/1000);
@@ -68,11 +133,19 @@ void taskHandleData(void *parameter){
         Serial.print("设备运行时长【时】：");Serial.println(runTime/(1000*60.0*60));
         Serial.print("设备运行时长【天】：");Serial.println(runTime/(1000*60.0*60*24));
     }
-    if((strcmp(SET_PWM_PERCENT, comm_val) == 0)){
+    if(cmdName.equals(SET_PWM_PERCENT)){
         String pwmPercentValStr=analysisJson(cmdVal,"pwmPercentVal");
         int pwmPercentVal=pwmPercentValStr.toInt();
         pwm_percent=pwmPercentVal;
         Serial.print("已设置PWM的占空比为："); Serial.println(pwmPercentVal);
+        saveInfoCfg("pwmPercentVal",pwmPercentValStr);
+    }
+    if(cmdName.equals(SWITCH_LED)){
+        String switchLedStateStr=analysisJson(cmdVal,"switchLedState");
+        int switchLedState=switchLedStateStr.toInt();
+        switch_led_state=switchLedState;
+        Serial.print("已设置开头状态为："); Serial.println(switchLedState);
+        saveInfoCfg("switchLedState",switchLedStateStr);
     }
 
 }
@@ -105,18 +178,12 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
             #pragma region 蓝牙接收指令并处理
             
             const char* comm_val=value.c_str();
-            String cmdName=analysisJson(comm_val,"cmdName");
-            String cmdVal=analysisJson(comm_val,"cmdVal");
-            // if(cmdName.equals(SET_WIFI)){
-            //     String wifiName=analysisJson(cmdVal,"wifiName");
-            //     String wifiPwd=analysisJson(cmdVal,"wifiPwd");
-            //     saveWIFICfg(wifiName,wifiPwd);
-                
+            //业务处理
+            businessHandleData(comm_val);
 
-            //     // if(network2.disconnect()){
-            //     //     network2.wifi_connect();  
-            //     // }      
-            // }
+            /*String cmdName=analysisJson(comm_val,"cmdName");
+            String cmdVal=analysisJson(comm_val,"cmdVal");
+           
             if(cmdName.equals(SET_WIFI)){
                 String wifiName=analysisJson(cmdVal,"wifiName");
                 String wifiPwd=analysisJson(cmdVal,"wifiPwd");
@@ -127,11 +194,9 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
                 //清理LittleFS
                 LittleFS.end();
                 //重启ESP32
-                ESP.restart();
-                //network2.wifi_connect();        
-            }
-            //创建线程处理指令
-            //createTask(taskHandleData,"BTE_task",configMINIMAL_STACK_SIZE,(void *)&comm_val,1);
+                ESP.restart(); 
+            }*/
+           
             Serial.println("指令发送成功");            
 
             #pragma endregion

@@ -1,0 +1,17 @@
+<cu-custom bgColor="bg-gradual-pink" isBack="{{true}}">
+	<view slot="backText">返回</view>
+	<view slot="content">灯控</view>
+</cu-custom>
+<form>
+	<view class="cu-form-group">
+		<view class="title">PWM占空比</view>
+		<input type="number" value="{{pwmPercentVal}}" bindinput="inputPWM" placeholder="请输入数值"></input>
+		<button style="width: 80px;" class="cu-btn bg-green shadow" bind:tap="sendPwmVal">发送</button>
+	</view>
+	
+	<view class="cu-form-group margin-top">
+		<view class="title">开关灯</view>
+		<switch checked="{{ledSwitch}}" bind:tap="changeLedSwitch"></switch>
+	</view>
+	
+</form>
