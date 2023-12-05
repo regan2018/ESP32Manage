@@ -33,6 +33,7 @@ PWMController pwm(PWM_PIN, PWM_FREQ, PWM_RESOLUTION);
 
 // 全局变量声明在头文件中,全局变量，可以使用 `extern` 来引用全局变量
 uint8_t switch_led_state=0;//LED灯开头状态，0=关，1=开
+const int ledPin=12;// 定义LED引脚
 
 // 定义三基色针脚
 gpio_num_t R = GPIO_NUM_12;

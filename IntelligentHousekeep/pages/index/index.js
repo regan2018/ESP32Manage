@@ -1,10 +1,12 @@
+const app=getApp();
 Page({
   data: {
     PageCur: 'basics'
   },
   NavChange(e) {
-    this.setData({
-      PageCur: e.currentTarget.dataset.cur
+    var url= e.currentTarget.dataset.url;
+    wx.navigateTo({
+      url: url,
     })
   },
   onShareAppMessage() {

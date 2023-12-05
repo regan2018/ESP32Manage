@@ -17,9 +17,10 @@ App({
               this.globalData.CustomBar = e.statusBarHeight + 50;
           }
         }
-      })
+      });
     },
     globalData: {
+      MQTTUid:"63d67cb328a3480d80d18e4cc8c41002",
       ColorList: [{
           title: '嫣红',
           name: 'red',
@@ -96,5 +97,71 @@ App({
           color: '#ffffff'
         },
       ]
+    },
+    //获取所有主题
+    getAlltopic_MQTT:function(fun){
+        var that=this;
+        var url="https://apis.bemfa.com/va/alltopic";
+        this.getReq(url,{uid:this.globalData.MQTTUid,type:1})
+        .then((res) => {
+            console.log(res);
+            // 处理返回的数据
+            if(fun!=undefined){
+                fun(res);
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            // 处理请求异常
+        });
+    },
+    //推送消息
+    sendPostJsonMsg_MQTT:function(topic,msgContent,fun){
+        var that=this;
+        var url="https://apis.bemfa.com/va/postJsonMsg";
+        this.postReq(url,{uid:this.globalData.MQTTUid,topic:topic,msg:msgContent,type:1})
+        .then((res) => {
+            console.log(res);
+            // 处理返回的数据
+            if(fun!=undefined){
+                fun(res);
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            // 处理请求异常
+        });
+    },
+    // 封装GET请求
+    getReq:function(url, params) {
+        return new Promise((resolve, reject) => {
+        wx.request({
+            url: url,
+            method: 'GET',
+            data: params,
+            success: (res) => {
+            resolve(res.data);
+            },
+            fail: (err) => {
+            reject(err);
+            },
+        });
+        });
+    },    
+    // 封装POST请求
+    postReq:function(url, params) {
+        return new Promise((resolve, reject) => {
+        wx.request({
+            url: url,
+            method: 'POST',
+            data: params,
+            success: (res) => {
+            resolve(res.data);
+            },
+            fail: (err) => {
+            reject(err);
+            },
+        });
+        });
     }
   })

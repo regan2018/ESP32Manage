@@ -1,7 +1,7 @@
 <scroll-view scroll-y class="scrollPage">
   <image src='/images/componentBg.png' mode='widthFix' class='response'></image>
   <view class='nav-list'>
-    <navigator hover-class='none' url="/pages/component/{{item.name}}/{{item.name}}" class="nav-li bg-{{item.color}}" wx:for="{{elements}}" wx:key>
+    <navigator hover-class='none' url="/pages/device/index?topic={{item.topic}}&title={{item.title}}" class="nav-li bg-{{item.color}}" wx:for="{{elements}}" wx:key>
       <view class="nav-title">{{item.title}}</view>
       <view class="nav-name">{{item.name}}</view>
       <text class='cuIcon-{{item.icon}}'></text>
@@ -9,3 +9,4 @@
   </view>
   <view class='cu-tabbar-height'></view>
 </scroll-view>
+<bottomBtnList id="bottomBtnList"></bottomBtnList>

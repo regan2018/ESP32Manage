@@ -58,11 +58,12 @@
       </button>
     </view>
     <view class="cu-item arrow">
-      <navigator class="content" url="/pages/search/searchBluetoothDevices" hover-class="none">
+      <navigator class="content" url="/pages/bluetoothDevices/search/searchBluetoothDevices" hover-class="none">
         <text class="cuIcon-creativefill text-orange"></text>
-        <text class="text-grey">Bug测试</text>
+        <text class="text-grey">设备初始化配置</text>
       </navigator>
     </view>
   </view>
   <view class="cu-tabbar-height"></view>
 </scroll-view>
+<bottomBtnList id="bottomBtnList"></bottomBtnList>

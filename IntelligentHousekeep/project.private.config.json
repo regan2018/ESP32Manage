@@ -11,7 +11,7 @@
             "list": [
                 {
                     "name": "搜索蓝牙设备页面",
-                    "pathName": "pages/search/searchBluetoothDevices",
+                    "pathName": "pages/bluetoothDevices/search/searchBluetoothDevices",
                     "query": "",
                     "launchMode": "default",
                     "scene": null

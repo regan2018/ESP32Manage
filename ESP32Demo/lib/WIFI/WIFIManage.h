@@ -26,7 +26,7 @@ AsyncWebServer server(80);      //创建一个服务器对象，WEB服务器端�
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-LittleFSWrapper fsManageUtil;
+//LittleFSWrapper fsManageUtil;
 
 String wifiCfgPath="/WIFIConfig.json";
 
@@ -49,6 +49,20 @@ const char*  topic = "esp32mqtt";        //主题名字，可在巴法云控制�
    
     String str=byteToString2(payload,length);
     Serial.println(str);
+
+    String cmdName=analysisJson(str,"cmdName");
+    String cmdVal=analysisJson(str,"cmdVal");
+   
+    Serial.print("cmdName：");Serial.println(cmdName);
+    Serial.print("cmdVal：");Serial.println(cmdVal);
+
+    if(cmdName.equals(SWITCH_LED)){
+        String switchLedStateStr=analysisJson(cmdVal,"switchLedState");
+        int switchLedState=switchLedStateStr.toInt();
+        switch_led_state=switchLedState;
+        Serial.print("已设置开头状态为："); Serial.println(switchLedState);
+        saveInfoCfg("switchLedState",switchLedStateStr);
+    }
 
 }
 #pragma endregion

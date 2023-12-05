@@ -14,6 +14,9 @@
 void setup() {
   Serial.begin(115200);
 
+  // 配置LED引脚为输出模式
+  pinMode(ledPin, OUTPUT);
+
   fsUtil.LittleFS_begin();   //LittleFS文件系统初始化
   if (LittleFS.begin(true,"/cfg")) {
     Serial.println("LittleFS mounted successfully.");
@@ -55,6 +58,14 @@ void loop() {
   Serial.print("PWM值："); Serial.println(pwm_percent);
 
   Serial.print("LED开头值："); Serial.println(switch_led_state);
+
+  if(switch_led_state==1){
+    digitalWrite(ledPin,HIGH);
+    Serial.println("灯已打开");
+  }else{
+    digitalWrite(ledPin,LOW);
+    Serial.println("灯已关闭");
+  }
 
   // 在循环中设置占空比
   pwm.setDutyCycle(pwm_percent); // 设置为50%的占空比

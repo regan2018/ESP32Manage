@@ -1,15 +1,14 @@
 {
     "pages": [
+        "pages/home/home",
         "pages/index/index",
         "pages/auth/auth",
-        "pages/basics/home/home",
-        "pages/component/home/home",
-        "pages/plugin/home/home",
-        "pages/about/home/home",
-        "pages/search/searchBluetoothDevices",
+        "pages/bluetoothDevices/search/searchBluetoothDevices",
         "pages/bluetoothDevices/bluetoothDevicesManage",
         "pages/bluetoothDevices/setWifi/setWifi",
-        "pages/bluetoothDevices/led/lampManage"
+        "pages/bluetoothDevices/led/lampManage",
+        "pages/my/index",
+        "pages/device/index"
     ],
     "window": {
         "navigationBarBackgroundColor": "#39b54a",
